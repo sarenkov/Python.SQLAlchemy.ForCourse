@@ -22,6 +22,7 @@ wcwidth = "==0.1.7"
 Faker = "==3.0.0"
 sqlalchemy = "*"
 pyodbc = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.7"
