@@ -7,7 +7,6 @@ from models.authors import Author
 from models.poem import Poem
 from models.firstQuatrain import FirstQuatrain
 from models.secondQuatrain import SecondQuatrain
-from models.result import Result
 import argparse
 import os
 
@@ -33,7 +32,6 @@ def main():
     Poem().create(connector)
     FirstQuatrain().create(connector)
     SecondQuatrain().create(connector)
-    Result().create(connector)
 
     # Определяем путь к источнику данных (стихов)
     current_directory = os.getcwd()

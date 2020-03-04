@@ -7,8 +7,8 @@ from db_connector.db_connector import Base
 class Poem(Base):
     __tablename__ = 'PoemsTitles'
     id = Column(Integer, primary_key=True, nullable=False)
-    objectid = Column(String)
-    poem_title = Column(String)
+    objectid = Column(String(collation='Cyrillic_General_CS_AS'))
+    poem_title = Column(String(collation='Cyrillic_General_CS_AS'))
     author_id = Column(Integer, ForeignKey('Authors.id'), nullable=False)
     firstQuatrain = relationship('FirstQuatrain', backref='PoemsTitles')
 

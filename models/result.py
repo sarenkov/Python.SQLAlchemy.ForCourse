@@ -5,10 +5,10 @@ from db_connector.db_connector import Base
 class Result(Base):
     __tablename__ = 'Answers'
     id = Column(Integer, primary_key=True, nullable=False)
-    student_name = Column(String)
-    poem_author = Column(String)
-    poem_title = Column(String)
-    poem_text = Column(Text)
+    student_name = Column(String(collation='Cyrillic_General_CS_AS'))
+    poem_author = Column(String(collation='Cyrillic_General_CS_AS'))
+    poem_title = Column(String(collation='Cyrillic_General_CS_AS'))
+    poem_text = Column(Text(collation='Cyrillic_General_CS_AS'))
 
     def create(cls, connector):
         engine = create_engine(connector.engine_url_to_db)
