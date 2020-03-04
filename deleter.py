@@ -30,12 +30,12 @@ def delete_users_from_file():
             continue
 
 
-    engine.execute("""  USE [Poems]
-                        DROP TABLE [dbo].[SecondQuatrains]
-                        DROP TABLE [dbo].[FirstQuatrains]
-                        DROP TABLE [dbo].[PoemsTitles]
-                        DROP TABLE [dbo].[Authors]  
-                        DROP TABLE [dbo].[Answers]""")
+    engine.execute(""" USE [Poems]
+                        DROP TABLE SecondQuatrains
+                        DROP TABLE FirstQuatrains
+                        DROP TABLE PoemsTitles
+                        DROP TABLE Authors
+                        DROP TABLE Answers""")
 
 
 if __name__=='__main__':
