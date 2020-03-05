@@ -1,16 +1,17 @@
-import random
-import time
-from uuid import uuid4
-from sqlalchemy.orm import sessionmaker
-from db_connector.db_connector import Connector
-from models.authors import Author
-from models.poem import Poem
-from models.firstQuatrain import FirstQuatrain
-from models.result import Result
-from models.secondQuatrain import SecondQuatrain
 import argparse
 import os
+import random
+from uuid import uuid4
 
+from prettytable import PrettyTable
+from sqlalchemy.orm import sessionmaker
+
+from db_connector.db_connector import Connector
+from models.authors import Author
+from models.firstQuatrain import FirstQuatrain
+from models.poem import Poem
+from models.result import Result
+from models.secondQuatrain import SecondQuatrain
 from users.user_creator import *
 
 
@@ -33,12 +34,15 @@ def main():
     Poem().create(connector)
     FirstQuatrain().create(connector)
     SecondQuatrain().create(connector)
-    # Result().create(connector)
+    Result().create(connector)
 
     # Определяем путь к источнику данных (стихов)
     current_directory = os.getcwd()
     data_directory = os.path.join(current_directory, 'data')
     data_list = os.listdir(data_directory)
+
+    # Обьявляем список для хранения авторов
+    authors_list = []
 
     # Создаем сессии для каждой таблицы
     session = sessionmaker()
@@ -56,6 +60,7 @@ def main():
             file_data = file.readlines()
             poem_title = file_data[0].strip()
             author_fullname = file_data[1].strip().split(' ')
+            authors_list.append(' '.join(author_fullname))
             author_firstname = author_fullname[0]
             auth_secondname = author_fullname[1]
             first_quatrain = ' '.join(x.strip() for x in file_data[2:6])
@@ -92,26 +97,26 @@ def main():
     secondQuantrain_session.add_all(second_parts_list_object)
     secondQuantrain_session.commit()
 
-    # Закрываем сессии
+    # # Закрываем сессии
     authors_session.close()
     poem_session.close()
     firstQuantrain_session.close()
     secondQuantrain_session.close()
 
-    # Создаем файл для хранения списка пользователей
+    # Создаем файл для хранения списка пользователей + prettyTable
     file_users_path = os.path.join(current_directory, 'users.csv')
     file = open(file_users_path, 'w')
-    file.write('Login;;Password\n')
-    file.close()
 
     # Создаем и добавляем пользователей сервера. Записываем пользователей в файл
-    for i in range(50):
+    for i in range(30):
         user = User()
         engine = connector.get_engine()
         engine.execute(get_sql_create_login(user))
-        with open(file_users_path, 'a') as file:
-            file.write(f'{user.username};;{user.password}\n')
-
+        p_table = PrettyTable()
+        p_table.field_names = ['Login', 'Password', 'Author name']
+        p_table.add_row([user.username, user.password, random.shuffle(authors_list).pop()])
+        file.write(p_table.get_string())
+        file.write('\n')
 
 if __name__ == '__main__':
     main()
