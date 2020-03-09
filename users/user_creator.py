@@ -22,5 +22,7 @@ def get_sql_create_login(user: User, dbname: str = 'Poems') -> str:
                 GRANT SELECT ON FirstQuatrains TO {user.username};
 				GRANT SELECT ON PoemsTitles TO {user.username};
 				GRANT SELECT ON SecondQuatrains TO {user.username};
-                GRANT SELECT ON Answers TO {user.username};
-				GRANT INSERT ON Answers TO {user.username};"""
+                GRANT SELECT ON Answers TO {user.username};				
+				GRANT UPDATE ON Answers TO {user.username};
+                GRANT DELETE ON Answers TO {user.username};
+                GRANT INSERT ON Answers TO {user.username};"""

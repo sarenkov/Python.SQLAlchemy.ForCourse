@@ -19,10 +19,10 @@ def main():
     # Парсим агрументы командной строки, переданные при запуске скрипта из консоли
     parser = argparse.ArgumentParser()
     parser.add_argument('--driver', default='{SQL Server}', type=str)
-    parser.add_argument('--server', default='localhost\SQLEXPRESS', type=str)
+    parser.add_argument('--server', default='DESKTOP-7APAP23\SQLEXPRESS', type=str)
     parser.add_argument('--db', default='Poems', type=str)
     parser.add_argument('--uid', default='Tester', type=str)
-    parser.add_argument('--pwd', default='123456', type=str)
+    parser.add_argument('--pwd', default='Tester123', type=str)
     args = parser.parse_args()
 
     # Создаем объект коннектора к серверу и создаем базу, если ее еще не было
@@ -60,13 +60,14 @@ def main():
             file_data = file.readlines()
             poem_title = file_data[0].strip()
             author_fullname = file_data[1].strip().split(' ')
-            authors_list.append(' '.join(author_fullname))
             author_firstname = author_fullname[0]
             auth_secondname = author_fullname[1]
+            authors_list.append(auth_secondname)
             first_quatrain = ' '.join(x.strip() for x in file_data[2:6])
             second_quatrain = file_data[6:]
 
-            author = Author(first_name=author_firstname,
+            author = Author(
+                            first_name=author_firstname,
                             second_name=auth_secondname,
                             objectid=str(uuid4()))
             authors_session.add(author)
@@ -97,14 +98,26 @@ def main():
     secondQuantrain_session.add_all(second_parts_list_object)
     secondQuantrain_session.commit()
 
-    # # Закрываем сессии
+    # Создаем лишние записи в таблице авторов и названий стихов
+    fake_author = Author(first_name='Ватрушкин',
+                         second_name='Иосиф')
+    authors_session.add(fake_author)
+    authors_session.commit()
+
+    fake_title = Poem(poem_title='Лишнее название',
+                      objectid=str(uuid4()))
+    poem_session.add(fake_title)
+    poem_session.commit()
+
+
+    # Закрываем сессии
     authors_session.close()
     poem_session.close()
     firstQuantrain_session.close()
     secondQuantrain_session.close()
 
     # Создаем файл для хранения списка пользователей + prettyTable
-    file_users_path = os.path.join(current_directory, 'users.csv')
+    file_users_path = os.path.join(current_directory, 'users.txt')
     file = open(file_users_path, 'w')
 
     # Создаем и добавляем пользователей сервера. Записываем пользователей в файл
@@ -112,9 +125,11 @@ def main():
         user = User()
         engine = connector.get_engine()
         engine.execute(get_sql_create_login(user))
+        random.shuffle(authors_list)
         p_table = PrettyTable()
         p_table.field_names = ['Login', 'Password', 'Author name']
-        p_table.add_row([user.username, user.password, random.shuffle(authors_list).pop()])
+        print()
+        p_table.add_row([user.username, user.password, authors_list.pop()])
         file.write(p_table.get_string())
         file.write('\n')
 
