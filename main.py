@@ -118,13 +118,13 @@ def main():
 
     # Создаем файл для хранения списка пользователей + prettyTable
     file_users_path = os.path.join(current_directory, 'users.txt')
-    file = open(file_users_path, 'w')
+    file = open(file_users_path, 'w', encoding="utf-8")
 
     # Создаем и добавляем пользователей сервера. Записываем пользователей в файл
     for i in range(30):
         user = User()
-        engine = connector.get_engine()
-        engine.execute(get_sql_create_login(user))
+        # engine = connector.get_engine()
+        # engine.execute(get_sql_create_login(user))
         random.shuffle(authors_list)
         p_table = PrettyTable()
         p_table.field_names = ['Login', 'Password', 'Author name']
